@@ -1,0 +1,79 @@
+connect to firebase
+
+setup document store for users
+
+setup doc store for items
+
+tie items to users
+
+page for clicking items
+    when adding:
+        need current time added
+        need aggregate date added
+
+
+page for adding/deleting items
+    add properties for items
+
+page for authentication
+
+summary pages with stats 
+    per day
+    per week
+    per month
+    avg per day of week
+
+timer since last item
+
+Daily
+{
+    id:'123123',
+    userId: '12312312332',
+    userName: 'David Randall',
+    userEmail: 'd@gmail.com',
+    totals: [
+        {
+            id: '11231231',
+            label: 'light'
+            count: 1
+        },
+        {
+            id: '11231231',
+            label: 'wine'
+            count: 1
+        },
+        ... 
+    ],
+    date: '11/1/22'
+    lastUpdate: '11/1/22 10:00:00'
+}
+
+{
+    id: '123klj1231',
+    first-name: 'David'
+    last-name: 'Randall'
+    create-date: '10/17/2022T15:15:00.000Z',
+    last-login-date: '10/17/2022T15:15:00.000Z'
+}
+
+{
+    id: '123123123123',
+    date: '10/17/2022T15:15:00.000Z',
+    item-label: 'lite',
+    user-id: 'alkjdfalkjasdf'
+}
+
+{
+    id: '123123123123',
+    date: '10/17/2022',
+    item-label: 'lite',
+    count: 5,
+    user-id: 'alkjdfalkjasdf'
+}
+
+{
+    id: '123123123',
+    item-label: 'lite',
+    user-id: 'alkjdfalkjasdf'
+}
+
