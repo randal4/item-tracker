@@ -3,7 +3,7 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import { FaWineGlass, FaBeer } from 'react-icons/fa';
 
-import { db, auth, signInWithGoogle } from './config/firebaseConfig';
+import { db, auth, signInWithGoogle } from '../config/firebaseConfig';
 import {
   doc,
   collection,
