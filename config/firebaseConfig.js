@@ -6,6 +6,8 @@ import {
   getDocs,
   getFirestore,
   query,
+  serverTimestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 
@@ -39,6 +41,11 @@ const signInWithGoogle = async () => {
         name: user.displayName,
         authProvider: 'google',
         email: user.email,
+        lastLogin: serverTimestamp(),
+      });
+    } else {
+      await updateDoc(docs.docs[0].ref, {
+        lastLogin: serverTimestamp(),
       });
     }
   } catch (err) {
@@ -47,5 +54,9 @@ const signInWithGoogle = async () => {
   }
 };
 
+const signOut = () => {
+  auth.signOut();
+};
+
 // Initialize Firebase
-export { auth, db, signInWithGoogle };
+export { auth, db, signInWithGoogle, signOut };

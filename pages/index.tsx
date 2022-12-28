@@ -1,9 +1,4 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
-import { FaWineGlass, FaBeer } from 'react-icons/fa';
-
-import { db, auth, signInWithGoogle } from '../config/firebaseConfig';
+import { db, auth, signInWithGoogle, signOut } from '../config/firebaseConfig';
 import {
   doc,
   collection,
@@ -24,7 +19,8 @@ import ItemsTable from './components/ItemsTable';
 import ItemLast from './components/ItemLast';
 import ItemsTotal from './components/ItemsTotal';
 import Header from './components/Header';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { Button } from 'flowbite-react';
+import Image from 'next/image';
 
 export interface IDate {
   seconds: number;
@@ -51,9 +47,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      return;
+    }
+
     const q = query(
       collection(db, 'items'),
       where('day', '==', new Date(new Date().toDateString())),
+      where('author_uid', '==', auth.currentUser.uid),
       orderBy('lastUpdate', 'desc')
     );
 
@@ -75,7 +76,7 @@ export default function Home() {
     );
 
     return () => {};
-  }, []);
+  }, [auth.currentUser]);
 
   const addData = async (itemLabel: string) => {
     try {
@@ -115,36 +116,46 @@ export default function Home() {
     }
   };
 
-  const signOut = () => {
-    auth.signOut();
-  };
-
   return (
     <>
       <Header user={user} signIn={signInWithGoogle} signOut={signOut} />
+      {auth.currentUser ? (
+        <div className="flex flex-col items-center h-full mt-3">
+          <ItemLast lastItem={items ? items[0] : null} />
+          <hr className="my-2 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
 
-      <div className="flex flex-col items-center h-full mt-3">
-        <ItemLast lastItem={items ? items[0] : null} />
-        <hr className="my-2 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
+          <div className="flex flex-wrap justify-center">
+            <ItemButton addData={addData} label="Wine" />
+            <ItemButton addData={addData} label="Light Beer" />
+            <ItemButton addData={addData} label="Heavy Beer" />
+            <ItemButton addData={addData} label="Liquor" />
+          </div>
+          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
+          <div className="p-6  border-slate-200 border-solid border-2 flex flex-col items-center max-w-[300px] w-2/5">
+            <div>Total</div>
+            <div>{items ? <ItemsTotal items={items} /> : <></>}</div>
+          </div>
 
-        <div className="flex flex-wrap justify-center">
-          <ItemButton addData={addData} label="Wine" />
-          <ItemButton addData={addData} label="Light Beer" />
-          <ItemButton addData={addData} label="Heavy Beer" />
-          <ItemButton addData={addData} label="Liquor" />
+          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
+
+          <div className="flex flex-grow bg-slate-50 flex-shrink-0 w-5/6">
+            <ItemsTable items={items} />
+          </div>
         </div>
-        <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
-        <div className="p-6  border-slate-200 border-solid border-2 flex flex-col items-center max-w-[300px] w-2/5">
-          <div>Total</div>
-          <div>{items ? <ItemsTotal items={items} /> : <></>}</div>
+      ) : (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="w-1/2 flex items-center justify-center">
+            <Image
+              className="cursor-pointer"
+              src="/btn_google_signin_dark_normal_web.png"
+              alt="me"
+              width="191"
+              height="46"
+              onClick={signInWithGoogle}
+            />
+          </div>
         </div>
-
-        <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
-
-        <div className="flex flex-grow bg-slate-50 flex-shrink-0 w-5/6">
-          <ItemsTable items={items} />
-        </div>
-      </div>
+      )}
     </>
   );
 }

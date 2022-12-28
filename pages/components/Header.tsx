@@ -24,18 +24,18 @@ const Header = (props: Props) => {
           Tracker
         </span>
       </Navbar.Brand>
-      <div className="flex md:order-2">
+      <div className="flex md:order-2 items-center">
         {props.user ? (
           <>
-            <span className="block py-2 pr-4 pl-3 text-gray-700 rounded  md:border-0  md:p-0 dark:text-gray-400">
+            <span className="py-2 pr-4 pl-3 text-gray-700 rounded md:border-0 md:p-0 dark:text-gray-400 text-white ">
               {props.user.email}
-              <Button
-                className="inline ml-3 py-2 pr-4 pl-3 text-gray-700 rounded  md:border-0  md:p-0 dark:text-gray-400"
-                onClick={() => props.signOut()}
-              >
-                Sign Out
-              </Button>
             </span>
+            <Button
+              className="inline ml-3 py-2 pr-4 pl-3 text-gray-700 rounded  md:border-0  md:p-0 dark:text-gray-400"
+              onClick={() => props.signOut()}
+            >
+              Sign Out
+            </Button>
           </>
         ) : (
           <Button
