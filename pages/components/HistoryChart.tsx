@@ -44,9 +44,9 @@ export function HistoryChart() {
   const options = {
     scales: {
       x: {
-        type: 'time',
+        type: 'time' as const,
         time: {
-          unit: 'day',
+          unit: 'day' as const,
         },
       },
     },
