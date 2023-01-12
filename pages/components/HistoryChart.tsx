@@ -38,7 +38,7 @@ export interface IHistory {
   y: number;
 }
 
-export function HistoryChart() {
+const HistoryChart = () => {
   const [historyMap, setHistoryMap] = useState<Map<String, IHistory[]>>(null);
 
   const options = {
@@ -113,4 +113,6 @@ export function HistoryChart() {
   }, [auth.currentUser]);
 
   return <Bar className="m-10" options={options} data={data} />;
-}
+};
+
+export default HistoryChart;

@@ -21,7 +21,7 @@ import ItemsTotal from './components/ItemsTotal';
 import Header from './components/Header';
 import { Button } from 'flowbite-react';
 import Image from 'next/image';
-import { HistoryChart } from './components/HistoryChart';
+import HistoryChart from './components/HistoryChart';
 
 export interface IDate {
   seconds: number;
