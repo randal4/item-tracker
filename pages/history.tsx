@@ -121,28 +121,7 @@ export default function Home() {
     <>
       <Header user={user} signIn={signInWithGoogle} signOut={signOut} />
       {auth.currentUser ? (
-        <div className="flex flex-col items-center h-full mt-3">
-          <ItemLast lastItem={items ? items[0] : null} />
-          <hr className="my-2 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
-
-          <div className="flex flex-wrap justify-center">
-            <ItemButton addData={addData} label="Wine" />
-            <ItemButton addData={addData} label="Light Beer" />
-            <ItemButton addData={addData} label="Heavy Beer" />
-            <ItemButton addData={addData} label="Liquor" />
-          </div>
-          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
-          <div className="p-6  border-slate-200 border-solid border-2 flex flex-col items-center max-w-[300px] w-2/5">
-            <div>Total</div>
-            <div>{items ? <ItemsTotal items={items} /> : <></>}</div>
-          </div>
-
-          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
-
-          <div className="flex flex-grow bg-slate-50 flex-shrink-0 w-5/6">
-            <ItemsTable items={items} />
-          </div>
-        </div>
+        <HistoryChart />
       ) : (
         <div className="flex items-center justify-center min-h-screen">
           <div className="w-1/2 flex items-center justify-center">
@@ -157,7 +136,6 @@ export default function Home() {
           </div>
         </div>
       )}
-      <HistoryChart />
     </>
   );
 }

@@ -22,33 +22,37 @@ const ItemsTable = ({ items }: Props) => {
         </tr>
       </thead>
       <tbody>
-        {items
-          ? items.map((item) => {
-              return (
-                <tr key={item.id}>
-                  <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                    {item?.lastUpdate?.seconds
-                      ? new Date(
-                          item?.lastUpdate?.seconds * 1000
-                        ).toLocaleTimeString('en-US', {
-                          // en-US can be set to 'default' to use user's browser settings
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
-                      : ''}
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                    {' '}
-                    {item.label}{' '}
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                    {' '}
-                    {item.count}{' '}
-                  </td>
-                </tr>
-              );
-            })
-          : ''}
+        {items && items.length ? (
+          items.map((item) => {
+            return (
+              <tr key={item.id}>
+                <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                  {item?.lastUpdate?.seconds
+                    ? new Date(
+                        item?.lastUpdate?.seconds * 1000
+                      ).toLocaleTimeString('en-US', {
+                        // en-US can be set to 'default' to use user's browser settings
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : ''}
+                </td>
+                <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                  {item.label}
+                </td>
+                <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                  {item.count}
+                </td>
+              </tr>
+            );
+          })
+        ) : (
+          <tr>
+            <td colSpan={3} className="text-center">
+              No Logged Items
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

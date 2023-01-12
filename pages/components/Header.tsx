@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar, Button } from 'flowbite-react';
+import { useRouter } from 'next/router';
 
 type Props = {
   user: any;
@@ -8,17 +9,19 @@ type Props = {
 };
 
 const Header = (props: Props) => {
+  const router = useRouter();
+
   return (
     <Navbar
       fluid={true}
       rounded={true}
       className="bg-gray-900 border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900"
     >
-      <Navbar.Brand href="https://flowbite.com/">
+      <Navbar.Brand href="/">
         <img
           src="https://flowbite.com/docs/images/logo.svg"
           className="mr-3 h-6 sm:h-9"
-          alt="Flowbite Logo"
+          alt="Logo"
         />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
           Tracker
@@ -48,11 +51,12 @@ const Header = (props: Props) => {
       </div>
       <Navbar.Toggle />
       <Navbar.Collapse>
-        <Navbar.Link href="/" active={true}>
+        <Navbar.Link href="/" active={router.pathname == '/'}>
           Home
         </Navbar.Link>
-        <Navbar.Link href="">History</Navbar.Link>
-        <Navbar.Link href="#"></Navbar.Link>
+        <Navbar.Link href="/history" active={router.pathname == '/history'}>
+          History
+        </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
   );
