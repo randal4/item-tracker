@@ -8,16 +8,17 @@ type Props = {
 
 const ItemLast = ({ lastItem }: Props): JSX.Element => {
   return lastItem ? (
-    <div className="p-3 text-slate-200 flex flex-col items-center">
+    <div className="p-3 text-slate-500 flex flex-col items-center">
       <div>Last item logged</div>
-      <div>
+      <div className="text-3xl">
         <Moment
-          className="text-3xl"
-          date={new Date(lastItem?.lastUpdate?.seconds * 1000).toString()}
+          date={lastItem?.lastUpdate?.seconds}
+          unix
           durationFromNow
           interval={1000}
-          format="m [mins]"
-        />
+          format="m [minutes]"
+        />{' '}
+        ago
       </div>
     </div>
   ) : (

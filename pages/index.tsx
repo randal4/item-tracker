@@ -12,6 +12,8 @@ import {
   where,
   updateDoc,
   increment,
+  setDoc,
+  getDoc,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import ItemButton from './components/ItemButton';
@@ -22,6 +24,8 @@ import Header from './components/Header';
 import { Button } from 'flowbite-react';
 import Image from 'next/image';
 import HistoryChart from './components/HistoryChart';
+import AddItemModal from './components/AddItemModal';
+import { updateCurrentUser } from 'firebase/auth';
 
 export interface IDate {
   seconds: number;
@@ -37,9 +41,28 @@ export interface IItem {
   lastUpdate: IDate;
 }
 
+export interface IItemType {
+  label: string;
+}
+
+export interface IUserDetails {
+  id: string;
+  authProvider: string;
+  email: string;
+  itemTypes: string[];
+  lastLogin: Date;
+  name: string;
+  uid;
+  string;
+}
+
 export default function Home() {
   const [items, setItems] = useState<IItem[] | undefined>(undefined);
   const [user, setUser] = useState(null);
+  const [userDetails, setUserDetails] = useState<IUserDetails | undefined>(
+    undefined
+  );
+  const [showAddItemType, setShowAddItemType] = useState<boolean>(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -51,6 +74,8 @@ export default function Home() {
     if (!auth.currentUser) {
       return;
     }
+
+    getUserDetails();
 
     const q = query(
       collection(db, 'items'),
@@ -78,6 +103,20 @@ export default function Home() {
 
     return () => {};
   }, [auth.currentUser]);
+
+  const getUserDetails = () => {
+    console.log('uid:', auth.currentUser.uid);
+    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+
+    onSnapshot(userDocRef, (userDocSnap) => {
+      if (userDocSnap.exists()) {
+        console.log('userDetails:', userDocSnap.data());
+        setUserDetails({
+          ...userDocSnap.data(),
+        } as IUserDetails);
+      }
+    });
+  };
 
   const addData = async (itemLabel: string) => {
     try {
@@ -117,31 +156,52 @@ export default function Home() {
     }
   };
 
+  const addDataType = (itemType: IItemType) => {
+    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+
+    setDoc(userDocRef, {
+      ...userDetails,
+      itemTypes: [...(userDetails.itemTypes || []), itemType.label],
+    });
+
+    setShowAddItemType(false);
+  };
+
   return (
     <>
       <Header user={user} signIn={signInWithGoogle} signOut={signOut} />
       {auth.currentUser ? (
         <div className="flex flex-col items-center h-full mt-3">
           <ItemLast lastItem={items ? items[0] : null} />
-          <hr className="my-2 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
+          <hr className="my-2 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10" />
 
           <div className="flex flex-wrap justify-center">
-            <ItemButton addData={addData} label="Wine" />
-            <ItemButton addData={addData} label="Light Beer" />
-            <ItemButton addData={addData} label="Heavy Beer" />
-            <ItemButton addData={addData} label="Liquor" />
+            {userDetails?.itemTypes?.map((itemType) => {
+              return (
+                <ItemButton key={itemType} addData={addData} label={itemType} />
+              );
+            })}
+            <ItemButton addData={() => setShowAddItemType(true)} label="+" />
           </div>
-          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
+          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10" />
           <div className="p-6  border-slate-200 border-solid border-2 flex flex-col items-center max-w-[300px] w-2/5">
             <div>Total</div>
             <div>{items ? <ItemsTotal items={items} /> : <></>}</div>
           </div>
 
-          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10 dark:bg-gray-700" />
+          <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10" />
 
-          <div className="flex flex-grow bg-slate-50 flex-shrink-0 w-5/6">
+          <div className="flex flex-grow flex-shrink-0 w-5/6">
             <ItemsTable items={items} />
           </div>
+          {showAddItemType ? (
+            <AddItemModal
+              showModal={setShowAddItemType}
+              addItemType={addDataType}
+            />
+          ) : (
+            <></>
+          )}
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-screen">
@@ -157,7 +217,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <HistoryChart />
+      {/* <HistoryChart /> */}
     </>
   );
 }

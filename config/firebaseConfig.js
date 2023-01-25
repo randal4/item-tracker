@@ -3,10 +3,12 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   getFirestore,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -32,22 +34,17 @@ const signInWithGoogle = async () => {
     const res = await signInWithPopup(auth, googleProvider);
     const user = res.user;
 
-    const q = query(collection(db, 'users'), where('uid', '==', user.uid));
-    const docs = await getDocs(q);
-
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, 'users'), {
+    await setDoc(
+      doc(db, 'users', user.uid),
+      {
         uid: user.uid,
         name: user.displayName,
         authProvider: 'google',
         email: user.email,
         lastLogin: serverTimestamp(),
-      });
-    } else {
-      await updateDoc(docs.docs[0].ref, {
-        lastLogin: serverTimestamp(),
-      });
-    }
+      },
+      { merge: true }
+    );
   } catch (err) {
     console.error(err);
     alert(err.message);

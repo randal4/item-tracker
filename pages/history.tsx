@@ -79,44 +79,6 @@ export default function Home() {
     return () => {};
   }, [auth.currentUser]);
 
-  const addData = async (itemLabel: string) => {
-    try {
-      const q = query(
-        collection(db, 'items'),
-        where('day', '==', new Date(new Date().toDateString())),
-        where('label', '==', itemLabel),
-        where('author_uid', '==', auth.currentUser.uid),
-        limit(1)
-      );
-
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.size > 0) {
-        console.log(`found querySnapshot`);
-        const docRef = querySnapshot.docs[0].ref;
-        console.log(`updating querySnapshot ${querySnapshot.docs[0].id}`);
-        await updateDoc(docRef, {
-          count: increment(1),
-          lastUpdate: serverTimestamp(),
-        });
-      } else {
-        console.log(`did not find querySnapshot, adding new`);
-        const docNewRef = await addDoc(collection(db, 'items'), {
-          created: serverTimestamp(),
-          day: new Date(new Date().toDateString()),
-          label: itemLabel,
-          count: 1,
-          lastUpdate: serverTimestamp(),
-          author_uid: auth.currentUser.uid,
-        });
-
-        console.log('Document written with ID: ', docNewRef.id);
-      }
-    } catch (e) {
-      console.error('Error adding document: ', e);
-    }
-  };
-
   return (
     <>
       <Header user={user} signIn={signInWithGoogle} signOut={signOut} />

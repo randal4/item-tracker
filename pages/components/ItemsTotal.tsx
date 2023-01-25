@@ -10,7 +10,7 @@ const ItemsTotal = ({ items }: Props) => {
     ? items.reduce((sum, current) => sum + current.count, 0)
     : 0;
 
-  return <div className="text-8xl text-slate-200 ">{total}</div>;
+  return <div className="text-8xl text-slate-500 ">{total}</div>;
 };
 
 export default ItemsTotal;

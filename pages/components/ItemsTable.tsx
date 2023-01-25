@@ -7,16 +7,16 @@ type Props = {
 
 const ItemsTable = ({ items }: Props) => {
   return (
-    <table className="border-collapse w-full border  border-slate-500  bg-slate-800 text-sm shadow-sm">
-      <thead className="bg-slate-50 dark:bg-slate-700">
+    <table className="border-collapse w-full border border-slate-500  text-sm shadow-sm">
+      <thead className="">
         <tr>
-          <th className="w-1/2 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">
+          <th className="w-1/2 border border-slate-300 font-semibold p-4 text-slate-900">
             Last Update
           </th>
-          <th className="w-1/2 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">
+          <th className="w-1/2 border border-slate-300 font-semibold p-4 text-slate-900">
             Label
           </th>
-          <th className="w-1/2 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">
+          <th className="w-1/2 border border-slate-300 font-semibold p-4 text-slate-900">
             Count
           </th>
         </tr>
@@ -26,7 +26,7 @@ const ItemsTable = ({ items }: Props) => {
           items.map((item) => {
             return (
               <tr key={item.id}>
-                <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                <td className="border border-slate-300 p-4 text-slate-500">
                   {item?.lastUpdate?.seconds
                     ? new Date(
                         item?.lastUpdate?.seconds * 1000
@@ -37,10 +37,10 @@ const ItemsTable = ({ items }: Props) => {
                       })
                     : ''}
                 </td>
-                <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                <td className="border border-slate-300 p-4 text-slate-500">
                   {item.label}
                 </td>
-                <td className="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                <td className="border border-slate-300 p-4 text-slate-500">
                   {item.count}
                 </td>
               </tr>
