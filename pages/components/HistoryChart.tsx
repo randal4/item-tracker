@@ -10,7 +10,7 @@ import {
   DatasetChartOptions,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { auth, db } from '../../config/firebaseConfig';
+import { auth, db } from '../../lib/firebaseConfig';
 import {
   collection,
   onSnapshot,
@@ -46,6 +46,11 @@ const HistoryChart = ({}: Props) => {
     datasets: [],
   });
   const [daysHistory, setDaysHistory] = useState<number>(90);
+  const [avgPerDay, setAvgPerDay] = useState<number | null>(null);
+  const [avgPerDayWhenAtLeastOne, setAvgPerDayWhenAtLeast1] = useState<
+    number | null
+  >(null);
+  const [uniqueDaysCount, setUniqueDaysCount] = useState<number | null>(null);
 
   const options = {
     scales: {
@@ -81,6 +86,8 @@ const HistoryChart = ({}: Props) => {
       q,
       (snapshot) => {
         let data = new Map<String, IHistory[]>();
+        let totalCount = 0;
+        let uniqueDays = new Set();
 
         snapshot.docs.map((doc) => {
           let label = doc.data().label;
@@ -94,6 +101,11 @@ const HistoryChart = ({}: Props) => {
               { x: doc.data().day.seconds * 1000, y: doc.data().count },
             ]);
           }
+
+          uniqueDays.add(doc.data().day.seconds);
+
+          //keep total count for avg
+          totalCount += doc.data().count;
         });
 
         let datasetsArr = [];
@@ -112,6 +124,10 @@ const HistoryChart = ({}: Props) => {
         };
 
         setHistoryMap(dataConfig);
+
+        setAvgPerDay(totalCount / daysHistory);
+        setUniqueDaysCount(uniqueDays.size);
+        setAvgPerDayWhenAtLeast1(totalCount / uniqueDays.size);
       },
       (error) => {
         console.log(error);
@@ -143,9 +159,15 @@ const HistoryChart = ({}: Props) => {
 
       <Bar className="m-10" options={options} data={historyMap} />
       <div className="flex items-center justify-center">
-        <LabelNumberBox label="test" stat="10" />
-        <LabelNumberBox label="test" stat="10" />
-        <LabelNumberBox label="test" stat="10" />
+        <LabelNumberBox label="Average Per Day" stat={avgPerDay?.toFixed(2)} />
+        <LabelNumberBox
+          label="Number of Days with at least 1"
+          stat={uniqueDaysCount?.toString()}
+        />
+        <LabelNumberBox
+          label="Average Per Day when > 1"
+          stat={avgPerDayWhenAtLeastOne?.toFixed(2)}
+        />
         <LabelNumberBox label="test" stat="10" />
       </div>
     </>

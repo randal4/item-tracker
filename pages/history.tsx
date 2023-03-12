@@ -1,25 +1,13 @@
-import { db, auth, signInWithGoogle, signOut } from '../config/firebaseConfig';
+import { db, auth, signInWithGoogle, signOut } from '../lib/firebaseConfig';
 import {
-  doc,
   collection,
-  addDoc,
-  limit,
-  serverTimestamp,
   onSnapshot,
   orderBy,
   query,
-  getDocs,
   where,
-  updateDoc,
-  increment,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import ItemButton from './components/ItemButton';
-import ItemsTable from './components/ItemsTable';
-import ItemLast from './components/ItemLast';
-import ItemsTotal from './components/ItemsTotal';
 import Header from './components/Header';
-import { Button } from 'flowbite-react';
 import Image from 'next/image';
 import HistoryChart from './components/HistoryChart';
 

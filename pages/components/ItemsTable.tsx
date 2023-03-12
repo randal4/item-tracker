@@ -48,8 +48,11 @@ const ItemsTable = ({ items }: Props) => {
           })
         ) : (
           <tr>
-            <td colSpan={3} className="text-center">
-              No Logged Items
+            <td
+              colSpan={3}
+              className="text-center font-bold text-xl m-5 border border-slate-300 p-4 text-slate-500"
+            >
+              No Items Logged Today
             </td>
           </tr>
         )}

@@ -1,4 +1,4 @@
-import { db, auth, signInWithGoogle, signOut } from '../config/firebaseConfig';
+import { db, auth, signInWithGoogle, signOut } from '../lib/firebaseConfig';
 import {
   doc,
   collection,
@@ -13,7 +13,6 @@ import {
   updateDoc,
   increment,
   setDoc,
-  getDoc,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import ItemButton from './components/ItemButton';
@@ -21,11 +20,9 @@ import ItemsTable from './components/ItemsTable';
 import ItemLast from './components/ItemLast';
 import ItemsTotal from './components/ItemsTotal';
 import Header from './components/Header';
-import { Button } from 'flowbite-react';
 import Image from 'next/image';
-import HistoryChart from './components/HistoryChart';
 import AddItemModal from './components/AddItemModal';
-import { updateCurrentUser } from 'firebase/auth';
+import { FaEdit, FaPlusCircle } from 'react-icons/fa';
 
 export interface IDate {
   seconds: number;
@@ -62,7 +59,9 @@ export default function Home() {
   const [userDetails, setUserDetails] = useState<IUserDetails | undefined>(
     undefined
   );
+
   const [showAddItemType, setShowAddItemType] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -167,6 +166,19 @@ export default function Home() {
     setShowAddItemType(false);
   };
 
+  const deleteDataType = (itemType: IItemType) => {
+    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+
+    const filteredItemTypes = userDetails.itemTypes.filter(
+      (item) => item !== itemType.label
+    );
+
+    updateDoc(userDocRef, {
+      ...userDetails,
+      itemTypes: filteredItemTypes,
+    });
+  };
+
   return (
     <>
       <Header user={user} signIn={signInWithGoogle} signOut={signOut} />
@@ -175,13 +187,32 @@ export default function Home() {
           <ItemLast lastItem={items ? items[0] : null} />
           <hr className="my-2 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10" />
 
+          <div className="flex flex-row justify-end w-5/6 mb-3">
+            <FaEdit
+              size={30}
+              color="gray"
+              onClick={() => setIsEditing(!isEditing)}
+              className="cursor-pointer mx-3"
+            />
+            <FaPlusCircle
+              size={30}
+              color="gray"
+              onClick={() => setShowAddItemType(true)}
+              className="cursor-pointer"
+            />
+          </div>
           <div className="flex flex-wrap justify-center">
             {userDetails?.itemTypes?.map((itemType) => {
               return (
-                <ItemButton key={itemType} addData={addData} label={itemType} />
+                <ItemButton
+                  key={itemType}
+                  addData={addData}
+                  isEditing={isEditing}
+                  label={itemType}
+                  deleteDataType={deleteDataType}
+                />
               );
             })}
-            <ItemButton addData={() => setShowAddItemType(true)} label="+" />
           </div>
           <hr className="my-4 mx-auto w-5/6 h-1 bg-gray-100 rounded border-0 md:my-10" />
           <div className="p-6  border-slate-200 border-solid border-2 flex flex-col items-center max-w-[300px] w-2/5">
