@@ -158,7 +158,7 @@ const HistoryChart = ({}: Props) => {
       </div>
 
       <Bar className="m-10" options={options} data={historyMap} />
-      <div className="flex items-center justify-center">
+      <div className="flex flex-wrap justify-center">
         <LabelNumberBox label="Average Per Day" stat={avgPerDay?.toFixed(2)} />
         <LabelNumberBox
           label="Number of Days with at least 1"
